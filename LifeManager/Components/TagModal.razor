@@ -1,0 +1,95 @@
+﻿@using LifeManager.Data
+@using LifeManager.State
+@using LifeManager.Services
+@implements IDisposable
+@inject TagStateService TagState
+@inject TagModalStateService ModalService
+@rendermode InteractiveServer
+
+@if (ModalService.IsOpen)
+{
+    <div class="modal modal-open" role="dialog" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold mb-4">Add a new tag</h3>
+            
+            <EditForm Model="_newTag" OnValidSubmit="HandleValidSubmit" class="w-full">
+                <DataAnnotationsValidator />
+                
+                <label class="floating-label w-full mb-4">
+                    <span>Label</span>
+                    <InputText placeholder="Label" class="input w-full" @bind-Value="_newTag.Label"/>
+                </label>
+                <ValidationMessage For="() => _newTag.Label" class="text-error text-sm"/>
+                
+                <div class="mt-4 mb-2 font-semibold text-sm">Select a color</div>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    @foreach (var color in _palette)
+                    {
+                        <button type="button" 
+                                class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110 flex items-center justify-center shadow-sm"
+                                style="background-color: @color; 
+                                       outline: @(_newTag.ColorHex == color ? $"2px solid {color}" : "none"); 
+                                       outline-offset: 2px;"
+                                @onclick="() => SelectColor(color)"
+                                aria-label="Select color @color">
+                            
+                            @if (_newTag.ColorHex == color)
+                            {
+                                <svg class="w-4 h-4 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            }
+                        </button>
+                    }
+                </div>
+
+                <div class="modal-action mt-5">
+                    <button type="button" class="btn btn-secondary btn-soft w-1/2" @onclick="CloseModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-1/2">Save Tag</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    private Tag _newTag = new() { ColorHex = "#3b82f6" };
+
+    private readonly string[] _palette = new[]
+    {
+        "#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#06b6d4",
+        "#3b82f6", "#8b5cf6", "#d946ef", "#f43f5e", "#64748b", "#1c1917"
+    };
+
+    protected override void OnInitialized()
+    {
+        ModalService.OnChange += RefreshUi;
+    }
+
+    private void SelectColor(string hex)
+    {
+        _newTag.ColorHex = hex;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await TagState.AddTagAsync(_newTag);
+        CloseModal();
+    }
+
+    private void CloseModal()
+    {
+        ModalService.Close();
+        _newTag = new Tag() { ColorHex = "#3b82f6" };
+    }
+
+    private void RefreshUi()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ModalService.OnChange -= RefreshUi;
+    }
+}

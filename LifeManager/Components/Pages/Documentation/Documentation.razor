@@ -1,0 +1,129 @@
+﻿@page "/docs"
+@inject NavigationManager Navigation
+
+<style>
+    html { scroll-behavior: smooth; }
+</style>
+
+<div class="flex flex-col md:flex-row gap-8 p-4 md:p-8 max-w-7xl mx-auto items-start">
+    
+    <aside class="w-full md:w-64 shrink-0 sticky top-8 hidden md:block">
+        <div class="font-bold text-lg mb-4 pl-4">LifeManager Docs</div>
+        <ul class="menu bg-base-200 rounded-box w-full">
+            <li><a href="/docs#overview">1. Overview</a></li>
+            <li>
+                <details open>
+                    <summary>2. Tasks Management</summary>
+                    <ul>
+                        <li><a href="/docs#tasks-create">Create a Task</a></li>
+                        <li><a href="/docs#tasks-edit">Edit & Complete</a></li>
+                    </ul>
+                </details>
+            </li>
+            <li><a href="/docs#tags">3. Tags System</a></li>
+            <li><a href="/docs#api-reference">4. Developer API</a></li>
+        </ul>
+    </aside>
+
+    <main class="flex-1 min-w-0">
+        
+        <div class="text-sm breadcrumbs text-base-content/70 mb-6">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li>Documentation</li>
+            </ul>
+        </div>
+
+        <h1 class="text-4xl font-extrabold mb-2">LifeManager Documentation</h1>
+        <p class="text-lg text-base-content/70 mb-10">Guide complet sur l'architecture et l'utilisation du module de gestion de la maison.</p>
+
+        <section id="overview" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">1. Overview</h2>
+            <p class="mb-4">Le tableau de bord centralise l'état de la maison. Il fournit une vue d'ensemble des tâches par pièce avec des indicateurs de progression en temps réel.</p>
+            
+            <div class="alert alert-info shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span><strong>Astuce :</strong> Cochez la case à côté d'une tâche pour mettre à jour la jauge globale de complétion instantanément.</span>
+            </div>
+        </section>
+
+        <section id="tasks" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">2. Tasks Management</h2>
+
+            <div id="tasks-create" class="mt-6 mb-8">
+                <h3 class="text-xl font-semibold mb-3">Créer une tâche</h3>
+                <p class="mb-4">L'interface de création utilise un composant Drawer dynamique hors de l'écran principal pour ne pas interrompre le flux de l'utilisateur.</p>
+                
+                <div role="tablist" class="tabs tabs-lifted">
+                    <input type="radio" name="tabs_create" role="tab" class="tab font-bold" aria-label="Interface Utilisateur" checked />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6 shadow-sm">
+                        <ol class="steps steps-vertical lg:steps-horizontal w-full text-sm">
+                            <li class="step step-primary">Cliquer sur <kbd class="kbd kbd-sm">+ Ajouter</kbd></li>
+                            <li class="step step-primary">Sélectionner la pièce</li>
+                            <li class="step step-primary">Remplir les détails</li>
+                            <li class="step step-primary">Sauvegarder</li>
+                        </ol>
+                    </div>
+
+                    <input type="radio" name="tabs_create" role="tab" class="tab font-bold" aria-label="Code Snippet" />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6 shadow-sm">
+                        <div class="mockup-code bg-neutral text-neutral-content">
+                            <pre data-prefix="$"><code>InjectCreateAction()</code></pre>
+                            <pre data-prefix=">"><code>Instantiates a new HouseTask()</code></pre>
+                            <pre data-prefix=">"><code>Sets _isEditMode = false</code></pre>
+                            <pre data-prefix=">"><code>Opens the TaskDrawer component</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tasks-edit" class="mb-8">
+                <h3 class="text-xl font-semibold mb-3">Modifier et Compléter</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Modification :</strong> Cliquez sur l'icône <kbd class="kbd kbd-sm">></kbd> au survol de la tâche. Le Drawer s'ouvre avec un clone de l'objet pour éviter le databinding accidentel.</li>
+                    <li><strong>Validation :</strong> Le toggle déclenche <code>ToggleTaskAsync</code> qui met à jour le statut <code>IsDone</code> en base de données.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="tags" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">3. Tags System</h2>
+            <p class="mb-4">Le système de tags implémente une relation Many-to-Many entre <code>HouseTask</code> et <code>Tag</code>. La sélection se fait via un composant Popover natif HTML.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="card bg-base-200 shadow-sm">
+                    <div class="card-body p-5">
+                        <h4 class="card-title text-lg"><span class="text-info">#</span> Ajouter</h4>
+                        <p class="text-sm">Cliquez sur <kbd class="kbd kbd-sm">+ Tag</kbd>. Utilisez l'input pour filtrer les tags existants en temps réel. Les tags déjà associés sont automatiquement masqués.</p>
+                    </div>
+                </div>
+                <div class="card bg-base-200 shadow-sm">
+                    <div class="card-body p-5">
+                        <h4 class="card-title text-lg"><span class="text-error">#</span> Supprimer</h4>
+                        <p class="text-sm">Survolez le badge d'un tag sélectionné. Une icône poubelle apparaît grâce aux classes Tailwind <code>group</code> et <code>group-hover</code>. Cliquez pour détacher.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="api-reference" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">4. Developer Reference</h2>
+            <p class="mb-4">Modèle de données principal de l'entité de gestion des tâches.</p>
+            
+            <div class="mockup-code bg-neutral text-neutral-content text-sm">
+<pre><code>public class HouseTask
+{
+    public int Id { get; set; }
+    [Required]
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public DateOnly? DueDate { get; set; }
+    public bool IsDone { get; set; }
+    public int RoomId { get; set; }
+    public List&lt;Tag&gt; Tags { get; set; } = new();
+}</code></pre>
+            </div>
+        </section>
+
+    </main>
+</div>

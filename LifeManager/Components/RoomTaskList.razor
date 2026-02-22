@@ -1,0 +1,52 @@
+﻿@using LifeManager.Data
+@using Microsoft.IdentityModel.Tokens
+
+<div class="flex gap-10 items-start p-6">
+    @{ int roomIndex = 0; }
+    @if (Rooms.IsNullOrEmpty())
+    {
+        <span class="text-neutral-content/50 text-xs"> Aucunes tâches.</span>
+    }
+    @foreach (var room in Rooms)
+    {
+        <div>
+            @if (roomIndex > 0)
+            {
+                <div class="divider divider-horizontal"></div>
+            }
+            <div>
+                <b>@room.Name</b>
+                <div class="text-xs mt-1">
+                    <ul class="list">
+                        @foreach (var task in room.Tasks)
+                        {
+                            <li>
+                                <div class="flex justify-between items-center border-b border-base-content/50 p-2 min-w-1/2 max-w-3/4">
+                                    <div>
+                                        <input type="checkbox" class="checkbox checkbox-xs mr-1" checked="@task.IsDone"
+                                               @onchange="() => OnToggleTask.InvokeAsync(task)"/>
+                                        @task.Title
+                                        
+                                        <p class="ml-6 text-xs text-neutral-content/80 break-all text-wrap ">
+                                            @task.Description
+                                        </p>
+                                    </div>
+                                    <svg @onclick="() => OnEditTask.InvokeAsync(task)" class="cursor-pointer ml-2 w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 16 4-4-4-4"/>
+                                    </svg>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        roomIndex++;
+    }
+</div>
+
+@code {
+    [Parameter] public required List<Room> Rooms { get; set; }
+    [Parameter] public EventCallback<HouseTask> OnToggleTask { get; set; }
+    [Parameter] public EventCallback<HouseTask> OnEditTask { get; set; }
+}

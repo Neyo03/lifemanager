@@ -1,0 +1,35 @@
+﻿@page "/rooms/create"
+@using LifeManager.Data
+@inject AppDbContext DbContext
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Ajouter une Pièce</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="Room" OnValidSubmit="AddRoom" FormName="CreateRoomForm">
+            <DataAnnotationsValidator />
+            
+            <div class="mb-3">
+                <label class="form-label">Nom de la pièce :</label>
+                <InputText class="form-control" @bind-Value="Room.Name" @NotNullAttribute />
+            </div>
+
+            <button type="submit" class="btn btn-success">Sauvegarder</button>
+            <a href="/rooms" class="btn btn-secondary">Annuler</a>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    public Room Room { get; set; } = new();
+
+    private async Task AddRoom()
+    {
+        DbContext.Rooms.Add(Room);
+        await DbContext.SaveChangesAsync();
+        Navigation.NavigateTo("/rooms");
+    }
+}

@@ -1,0 +1,57 @@
+﻿@page "/rooms"
+@using Microsoft.EntityFrameworkCore
+@using LifeManager.Data
+@inject AppDbContext DbContext
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>🏠 Mes Pièces</h3>
+
+<div class="mb-3">
+    <a href="/rooms/create" class="btn btn-primary">+ Nouvelle Pièce</a>
+</div>
+
+@if (rooms == null)
+{
+    <p><em>Chargement...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var room in rooms)
+        {
+            <tr>
+                <td>@room.Name</td>
+                <td>
+                    <a href="/rooms/edit/@room.Id" class="btn btn-sm btn-secondary">Modifier</a>
+                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteRoom(room)">Supprimer</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Room>? rooms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // On charge la liste au démarrage
+        rooms = await DbContext.Rooms.ToListAsync();
+    }
+
+    private async Task DeleteRoom(Room room)
+    {
+        DbContext.Rooms.Remove(room);
+        await DbContext.SaveChangesAsync();
+        rooms?.Remove(room); // Mise à jour visuelle instantanée
+    }
+}

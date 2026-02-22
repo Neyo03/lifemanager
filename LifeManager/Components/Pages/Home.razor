@@ -1,0 +1,62 @@
+﻿@page "/"
+@using LifeManager.Data
+@using LifeManager.Services
+@using LifeManager.Components
+@using LifeManager.State
+@inject HouseService HouseService 
+@inject TagStateService TagState 
+@rendermode InteractiveServer
+
+<h1 class="text-xl mb-3">Ma Maison</h1>
+
+@if (_rooms == null || _roomsWithTasks == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="card border w-1/2">
+        <div class="rounded-t-xl bg-secondary-content p-3">
+            <h2 class="card-title flex justify-between items-center text-base-200">
+                <div class="flex flex-col w-1/2">
+                    Tâches
+                    <small class="text-primary-content/50 text-xs">@_countDoneTasks / @_countTasks accomplies</small>
+                </div>
+                <div class="flex gap-1 items-center w-1/2 justify-end">
+                    <label class="input input-sm rounded-lg text-neutral-content w-2/3">
+                        <input type="search" required placeholder="Search" />
+                    </label>
+                    <small class="bg-base-100 ms-1 p-2 rounded-lg text-neutral-content shadow-xs text-xs cursor-pointer" 
+                           @onclick="OpenCreateDrawer">
+                        + Ajouter
+                    </small>
+                </div>
+            </h2>
+        </div>
+        
+        <RoomTaskList 
+            Rooms="_roomsWithTasks" 
+            OnToggleTask="ToggleTask" 
+            OnEditTask="OpenEditDrawer" />
+        <div class="divider cursor-pointer link text-xs" @onclick="ToggleDoneTasksSection">Tâches terminées 
+        </div>
+        @if (_isOpenDoneTask)
+        {
+            <RoomTaskList 
+                Rooms="_roomsWithDoneTasks" 
+                OnToggleTask="ToggleTask" 
+                OnEditTask="OpenEditDrawer" />
+        }
+    </div>
+    
+    <TaskDrawer IsOpen="_isDrawerOpen" 
+                IsEditMode="_isEditMode"
+                CurrentTask="_currentTask" 
+                Rooms="_rooms" 
+                Tags="TagState.Tags"
+                OnClose="CloseDrawer" 
+                OnSave="SaveTask" 
+                OnDelete="RemoveTask"
+    
+    />
+}

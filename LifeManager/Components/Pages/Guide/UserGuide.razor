@@ -1,0 +1,125 @@
+﻿@page "/guide"
+@inject NavigationManager Navigation
+
+<style>
+    html { scroll-behavior: smooth; }
+</style>
+
+<div class="flex flex-col md:flex-row gap-8 p-4 md:p-8 max-w-7xl mx-auto items-start">
+    
+    <aside class="w-full md:w-64 shrink-0 sticky top-8 hidden md:block">
+        <div class="font-bold text-lg mb-4 pl-4">Menu d'aide</div>
+        <ul class="menu bg-base-200 rounded-box w-full">
+            <li><a href="/guide#bienvenue">1. Bienvenue</a></li>
+            <li>
+                <details open>
+                    <summary>2. Vos Tâches</summary>
+                    <ul>
+                        <li><a href="/guide#ajouter-tache">Ajouter une tâche</a></li>
+                        <li><a href="/guide#modifier-tache">Modifier & Valider</a></li>
+                    </ul>
+                </details>
+            </li>
+            <li><a href="/guide#etiquettes">3. Les Étiquettes (Tags)</a></li>
+        </ul>
+    </aside>
+
+    <main class="flex-1 min-w-0">
+        
+        <div class="text-sm breadcrumbs text-base-content/70 mb-6">
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li>Guide d'utilisation</li>
+            </ul>
+        </div>
+
+        <h1 class="text-4xl font-extrabold mb-2">Comment utiliser LifeManager ?</h1>
+        <p class="text-lg text-base-content/70 mb-10">Un guide simple et rapide pour organiser votre maison sans stress.</p>
+
+        <section id="bienvenue" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">1. Bienvenue sur votre Tableau de Bord</h2>
+            <p class="mb-4">Votre page d'accueil est le centre de contrôle de votre maison. Elle regroupe toutes vos pièces et les actions à y effectuer.</p>
+            
+            <div class="alert alert-success shadow-sm text-success-content">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span><strong>Astuce :</strong> Regardez le compteur en haut de votre écran pour voir votre progression de la journée (ex: 2/5 tâches accomplies).</span>
+            </div>
+        </section>
+
+        <section id="taches" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">2. Gérer vos tâches</h2>
+
+            <div id="ajouter-tache" class="mt-6 mb-8">
+                <h3 class="text-xl font-semibold mb-3">Ajouter une action à faire</h3>
+                <p class="mb-4">Vous avez remarqué qu'il faut changer une ampoule ou faire les poussières ? Voici comment le noter :</p>
+                
+                <div role="tablist" class="tabs tabs-lifted">
+                    <input type="radio" name="tabs_taches" role="tab" class="tab font-bold" aria-label="Étapes rapides" checked />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6 shadow-sm">
+                        <ol class="steps steps-vertical lg:steps-horizontal w-full text-sm">
+                            <li class="step step-primary">Cliquez sur <span class="badge badge-primary">+ Ajouter</span></li>
+                            <li class="step step-primary">Choisissez la pièce</li>
+                            <li class="step step-primary">Écrivez quoi faire</li>
+                            <li class="step step-primary">Cliquez sur Ajouter</li>
+                        </ol>
+                    </div>
+
+                    <input type="radio" name="tabs_taches" role="tab" class="tab font-bold" aria-label="Détails" />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6 shadow-sm">
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Titre :</strong> Soyez bref (ex: "Passer l'aspirateur").</li>
+                            <li><strong>Description :</strong> Optionnel, utile pour donner plus de détails (ex: "Ne pas oublier sous le canapé").</li>
+                            <li><strong>Date limite :</strong> Pratique pour les choses urgentes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modifier-tache" class="mb-8">
+                <h3 class="text-xl font-semibold mb-3">Terminer ou modifier une tâche</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="card bg-base-200 shadow-sm">
+                        <div class="card-body p-5">
+                            <h4 class="card-title text-lg">✅ Marquer comme fait</h4>
+                            <p class="text-sm">Cliquez simplement sur la petite case carrée à côté du nom de la tâche. C'est tout ! Le compteur se mettra à jour automatiquement.</p>
+                        </div>
+                    </div>
+                    <div class="card bg-base-200 shadow-sm">
+                        <div class="card-body p-5">
+                            <h4 class="card-title text-lg">✏️ Modifier</h4>
+                            <p class="text-sm">Vous vous êtes trompé ? Passez votre souris sur la tâche et cliquez sur le petit chevron pour ouvrir le menu de modification.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="etiquettes" class="mb-12 pt-4">
+            <h2 class="text-2xl font-bold border-b border-base-300 pb-2 mb-4">3. Les Étiquettes (Tags)</h2>
+            <p class="mb-4">Les étiquettes vous aident à classer vos tâches visuellement. Par exemple, vous pouvez créer une étiquette <span class="badge badge-info badge-sm">Urgent</span> ou <span class="badge badge-warning badge-sm">Courses</span>.</p>
+
+            <ul class="bg-base-100 rounded-box shadow-sm border border-base-200 p-4 space-y-3">
+                <li class="flex items-start gap-3">
+                    <span class="text-xl">🏷️</span>
+                    <div>
+                        <strong>Mettre une étiquette :</strong> Quand vous créez une tâche, cliquez sur le bouton <kbd class="kbd kbd-sm">+ Tag</kbd> et choisissez dans la liste.
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-xl">✨</span>
+                    <div>
+                        <strong>Créer une nouvelle étiquette :</strong> Dans ce même menu, cliquez sur "Créer un tag" pour inventer votre propre catégorie.
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-xl">🗑️</span>
+                    <div>
+                        <strong>Enlever une étiquette :</strong> Passez votre souris sur l'étiquette colorée de la tâche. Une petite poubelle rouge apparaîtra, cliquez dessus pour la retirer.
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+</div>
