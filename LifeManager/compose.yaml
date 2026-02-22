@@ -11,6 +11,20 @@
     ports:
       - "5432:5432"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  lifemanager-migration:
+    build: .
+    image: lifemanager-app:latest
+    container_name: lifemanager_migration
+    entrypoint: ["./efbundle", "--connection", "Host=lifemanager-db;Database=lifemanager;Username=postgres;Password=YourStrongPassword123!"]
+    depends_on:
+      lifemanager-db:
+        condition: service_healthy
 
   lifemanager-app:
     build: .
@@ -21,7 +35,8 @@
     ports:
       - "8080:8080"
     depends_on:
-      - lifemanager-db
+      lifemanager-migration:
+        condition: service_completed_successfully
     restart: unless-stopped
 
 volumes:
