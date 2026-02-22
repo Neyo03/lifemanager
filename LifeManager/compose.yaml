@@ -1,0 +1,28 @@
+﻿services:
+  lifemanager-db:
+    image: postgres:15-alpine
+    container_name: lifemanager_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YourStrongPassword123!
+      POSTGRES_DB: lifemanager
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  lifemanager-app:
+    build: .
+    image: lifemanager-app:latest
+    container_name: lifemanager_app
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=lifemanager-db;Database=lifemanager;Username=postgres;Password=YourStrongPassword123!
+    ports:
+      - "8080:8080"
+    depends_on:
+      - lifemanager-db
+    restart: unless-stopped
+
+volumes:
+  pgdata:

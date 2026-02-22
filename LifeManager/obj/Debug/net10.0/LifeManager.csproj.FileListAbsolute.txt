@@ -285,3 +285,4 @@ C:\Users\wagner\Desktop\www\dotnet\LifeManager\LifeManager\obj\Debug\net10.0\sco
 C:\Users\wagner\Desktop\www\dotnet\LifeManager\LifeManager\obj\Debug\net10.0\compressed\ae6nzw326z-{0}-h6p5hwyckv-h6p5hwyckv.gz
 C:\Users\wagner\Desktop\www\dotnet\LifeManager\LifeManager\obj\Debug\net10.0\compressed\h010lxqerd-{0}-h6p5hwyckv-h6p5hwyckv.gz
 C:\Users\wagner\Desktop\www\dotnet\LifeManager\LifeManager\obj\Debug\net10.0\compressed\75f7h6puoa-{0}-j9t588xky8-j9t588xky8.gz
+C:\Users\wagner\Desktop\www\dotnet\LifeManager\LifeManager\obj\Debug\net10.0\LifeManager.sourcelink.json
