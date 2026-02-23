@@ -18,6 +18,9 @@ public class HouseTask
     
     [Required(ErrorMessage = "Une pièce est obligatoire.")]
     public int? RoomId { get; set; }
-    
     public List<Tag> Tags { get; set; } = new();
+    
+    public int? UserAssignedId { get; set; }
+    
+    public int? CompletedById { get; set; }
 }

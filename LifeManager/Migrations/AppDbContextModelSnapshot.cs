@@ -37,6 +37,23 @@ namespace LifeManager.Migrations
                     b.ToTable("HouseTaskTag");
                 });
 
+            modelBuilder.Entity("LifeManager.Data.Home", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Homes");
+                });
+
             modelBuilder.Entity("LifeManager.Data.HouseTask", b =>
                 {
                     b.Property<int>("Id")
@@ -44,6 +61,9 @@ namespace LifeManager.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CompletedById")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -62,6 +82,9 @@ namespace LifeManager.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserAssignedId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoomId");
@@ -77,11 +100,16 @@ namespace LifeManager.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("HomeId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HomeId");
 
                     b.ToTable("Rooms");
                 });
@@ -98,6 +126,9 @@ namespace LifeManager.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("HomeId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Label")
                         .IsRequired()
                         .HasColumnType("text");
@@ -105,6 +136,44 @@ namespace LifeManager.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("LifeManager.Data.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Firstname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("HomeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Lastname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HomeId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HouseTaskTag", b =>
@@ -129,6 +198,29 @@ namespace LifeManager.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LifeManager.Data.Room", b =>
+                {
+                    b.HasOne("LifeManager.Data.Home", null)
+                        .WithMany("Rooms")
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LifeManager.Data.User", b =>
+                {
+                    b.HasOne("LifeManager.Data.Home", null)
+                        .WithMany("Users")
+                        .HasForeignKey("HomeId");
+                });
+
+            modelBuilder.Entity("LifeManager.Data.Home", b =>
+                {
+                    b.Navigation("Rooms");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("LifeManager.Data.Room", b =>

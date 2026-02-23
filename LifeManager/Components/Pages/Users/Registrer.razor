@@ -1,0 +1,97 @@
+﻿@page "/register"
+@attribute [AllowAnonymous]
+@using LifeManager.Data
+@using LifeManager.Model
+@using Microsoft.AspNetCore.Authorization
+@inject Services.UserService UserService
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<div class="flex items-center justify-center min-h-[80vh] py-8">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold justify-center mb-4">Create an Account</h2>
+            
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="alert alert-error text-sm py-2">@_errorMessage</div>
+            }
+
+            <EditForm Model="_model" OnValidSubmit="HandleRegistration" FormName="RegisterForm" class="space-y-4">
+                <DataAnnotationsValidator />
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Firstname</span></label>
+                        <InputText class="input input-bordered w-full" @bind-Value="_model.Firstname" />
+                        <ValidationMessage For="() => _model.Firstname" class="text-error text-xs mt-1" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Lastname</span></label>
+                        <InputText class="input input-bordered w-full" @bind-Value="_model.Lastname" />
+                        <ValidationMessage For="() => _model.Lastname" class="text-error text-xs mt-1" />
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Username</span></label>
+                    <InputText class="input input-bordered w-full" @bind-Value="_model.Username" />
+                    <ValidationMessage For="() => _model.Username" class="text-error text-xs mt-1" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Email</span></label>
+                    <InputText type="email" class="input input-bordered w-full" @bind-Value="_model.Email" />
+                    <ValidationMessage For="() => _model.Email" class="text-error text-xs mt-1" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Password</span></label>
+                    <InputText type="password" class="input input-bordered w-full" @bind-Value="_model.Password" />
+                    <ValidationMessage For="() => _model.Password" class="text-error text-xs mt-1" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Confirm Password</span></label>
+                    <InputText type="password" class="input input-bordered w-full" @bind-Value="_model.ConfirmPassword" />
+                    <ValidationMessage For="() => _model.ConfirmPassword" class="text-error text-xs mt-1" />
+                </div>
+
+                <div class="card-actions justify-center mt-6">
+                    <button type="submit" class="btn btn-primary w-full">Register</button>
+                    <a href="/login" class="link link-hover text-sm mt-2">Already have an account? Login</a>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly RegisterModel _model = new();
+    private string? _errorMessage;
+
+    private async Task HandleRegistration()
+    {
+        _errorMessage = null;
+        
+        var newUser = new User
+        {
+            Firstname = _model.Firstname,
+            Lastname = _model.Lastname,
+            Username = _model.Username,
+            Email = _model.Email,
+            Password = _model.Password
+        };
+
+        var isSuccess = await UserService.RegisterAsync(newUser);
+        
+        if (isSuccess)
+        {
+            Nav.NavigateTo("/login");
+        }
+        else
+        {
+            _errorMessage = "This email is already in use.";
+        }
+    }
+}

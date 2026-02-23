@@ -71,7 +71,7 @@ public partial class Home : ComponentBase
     private void CloseDrawer()
     {
         _isDrawerOpen = false;
-        _currentTask = new HouseTask(); // Reset
+        _currentTask = new HouseTask();
     }
 
     private async Task SaveTask()
