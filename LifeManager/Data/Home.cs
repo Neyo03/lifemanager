@@ -9,4 +9,6 @@ public class Home
     public List<User> Users { get; set; } = new();
     
     public List<Room> Rooms { get; set; } = new();
+    
+    public List<Tag> Tags { get; set; } = new();
 }

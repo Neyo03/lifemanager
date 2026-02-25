@@ -8,6 +8,8 @@ public partial class Home : ComponentBase
     private List<Room>? _rooms;
     private List<Room>? _roomsWithTasks;
     private List<Room>? _roomsWithDoneTasks;
+
+    private User? _connectedUser;
     
     private HouseTask _currentTask = new();
     
@@ -16,13 +18,14 @@ public partial class Home : ComponentBase
     
     private bool _isDrawerOpen;
     private bool _isEditMode;
-    private bool _isTagModalOpen;
     private bool _isOpenDoneTask;
+
 
     protected override async Task OnInitializedAsync()
     {
+        _connectedUser = await UserService.GetAuthenticatedUserAsync();
         TagState.OnChange += StateHasChanged;
-        await TagState.InitializeAsync();
+        await TagState.InitializeAsync(_connectedUser);
         await LoadDataAsync();
     }
     
@@ -33,11 +36,12 @@ public partial class Home : ComponentBase
 
     private async Task LoadDataAsync()
     {
-        _rooms = await HouseService.GetRoomsAsync();
-        _roomsWithTasks = await HouseService.GetRoomsInprogressTasksAsync();
-        _countTasks = await HouseService.GetTotalTasksAsync();
-        _countDoneTasks = await HouseService.GetTotalDoneTasksAsync();
-        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksAsync();
+        
+        _rooms = await HouseService.GetRoomsAsync(_connectedUser);
+        _roomsWithTasks = await HouseService.GetRoomsInprogressTasksAsync(_connectedUser);
+        _countTasks = await HouseService.GetTotalTasksAsync(_connectedUser);
+        _countDoneTasks = await HouseService.GetTotalDoneTasksAsync(_connectedUser);
+        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksAsync(_connectedUser);
     }
 
     private void OpenCreateDrawer()
@@ -56,11 +60,11 @@ public partial class Home : ComponentBase
     {
         _currentTask = new HouseTask 
         { 
-            Id = task.Id, 
+            Id = task.Id,
             Title = task.Title, 
             Description = task.Description,
             DueDate = task.DueDate,
-            RoomId = task.RoomId,
+            Room = task.Room,
             IsDone = task.IsDone,
             Tags = task.Tags.ToList()
         };
@@ -99,8 +103,8 @@ public partial class Home : ComponentBase
     private async Task ToggleTask(HouseTask task)
     {
         await HouseService.ToggleTaskAsync(task);
-        _countDoneTasks = await HouseService.GetTotalDoneTasksAsync();
-        _roomsWithTasks = await HouseService.GetRoomsInprogressTasksAsync();
-        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksAsync();
+        _roomsWithTasks = await HouseService.GetRoomsInprogressTasksAsync(_connectedUser);
+        _countDoneTasks = await HouseService.GetTotalDoneTasksAsync(_connectedUser);
+        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksAsync(_connectedUser);
     }
 }

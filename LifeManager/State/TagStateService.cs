@@ -3,36 +3,29 @@ using LifeManager.Services;
 
 namespace LifeManager.State;
 
-public class TagStateService
+public class TagStateService(TagService tagService)
 {
-    private readonly TagService _tagService;
-    
-    // The shared list of tags in memory
     public List<Tag> Tags { get; private set; } = new();
     
-    // The event triggered whenever the tag list changes
     public event Action? OnChange;
-
-    public TagStateService(TagService tagService)
+    
+    public async Task InitializeAsync(User user)
     {
-        _tagService = tagService;
-    }
-
-    // Loads tags from the DB ONLY if the list is currently empty
-    public async Task InitializeAsync()
-    {
-        if (!Tags.Any())
+        if (Tags.Count == 0)
         {
-            Tags = await _tagService.GetTagsAsync();
-            NotifyStateChanged();
+            await RefreshAsync(user);
         }
     }
-
-    // Adds a tag to the DB, updates the memory list, and notifies all components
+    
     public async Task AddTagAsync(Tag tag)
     {
-        await _tagService.AddTagAsync(tag);
-        Tags = await _tagService.GetTagsAsync(); // Refresh from DB to get the new ID
+        await tagService.AddTagAsync(tag);
+    }
+
+    public async Task RefreshAsync(User user)
+    {
+        var fetchedTags = await tagService.GetTagsAsync(user);
+        Tags = fetchedTags ?? new();
         NotifyStateChanged();
     }
 
@@ -43,7 +36,6 @@ public class TagStateService
     //     Tags.Remove(tag);
     //     NotifyStateChanged();
     // }
-
-    // Triggers the UI refresh for all subscribed components
+    
     private void NotifyStateChanged() => OnChange?.Invoke();
 }

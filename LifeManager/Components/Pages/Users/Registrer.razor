@@ -2,8 +2,9 @@
 @attribute [AllowAnonymous]
 @using LifeManager.Data
 @using LifeManager.Model
-@using Microsoft.AspNetCore.Authorization
-@inject Services.UserService UserService
+@using LifeManager.Services
+@inject UserService UserService
+@inject HouseService HouseService
 @inject NavigationManager Nav
 @rendermode InteractiveServer
 
@@ -19,44 +20,52 @@
 
             <EditForm Model="_model" OnValidSubmit="HandleRegistration" FormName="RegisterForm" class="space-y-4">
                 <DataAnnotationsValidator />
+                
+                <label class="floating-label w-full mb-4">
+                    <span>House Name</span>
+                    <InputText class="input input-bordered w-full" @bind-Value="_model.HouseName" />
+                    <ValidationMessage For="() => _model.HouseName" class="text-error text-xs mt-1" />
+                </label>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label"><span class="label-text">Firstname</span></label>
-                        <InputText class="input input-bordered w-full" @bind-Value="_model.Firstname" />
-                        <ValidationMessage For="() => _model.Firstname" class="text-error text-xs mt-1" />
-                    </div>
-                    <div class="form-control">
-                        <label class="label"><span class="label-text">Lastname</span></label>
-                        <InputText class="input input-bordered w-full" @bind-Value="_model.Lastname" />
-                        <ValidationMessage For="() => _model.Lastname" class="text-error text-xs mt-1" />
-                    </div>
+                    
+                    <label class="floating-label w-full mb-4">
+                        <label>Firstname</label>
+                        <InputText class="input input-bordered w-full" @bind-Value="_model.Firstname"/>
+                        <ValidationMessage For="() => _model.Firstname" class="text-error text-xs mt-1"/>
+                    </label>
+                    
+                    <label class="floating-label w-full mb-4">
+                        <label>Lastname</label>
+                        <InputText class="input input-bordered w-full" @bind-Value="_model.Lastname"/>
+                        <ValidationMessage For="() => _model.Lastname" class="text-error text-xs mt-1"/>
+                    </label>
                 </div>
-
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Username</span></label>
+                
+                <label class="floating-label w-full mb-4">
+                    <span>Username</span>
                     <InputText class="input input-bordered w-full" @bind-Value="_model.Username" />
                     <ValidationMessage For="() => _model.Username" class="text-error text-xs mt-1" />
-                </div>
-
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Email</span></label>
+                </label>
+                
+                <label class="floating-label w-full mb-4">
+                    <span>Email</span>
                     <InputText type="email" class="input input-bordered w-full" @bind-Value="_model.Email" />
                     <ValidationMessage For="() => _model.Email" class="text-error text-xs mt-1" />
-                </div>
-
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Password</span></label>
+                </label>
+                
+                <label class="floating-label w-full mb-4">
+                    <label>Password</label>
                     <InputText type="password" class="input input-bordered w-full" @bind-Value="_model.Password" />
                     <ValidationMessage For="() => _model.Password" class="text-error text-xs mt-1" />
-                </div>
-
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Confirm Password</span></label>
+                </label>
+                
+                <label class="floating-label w-full mb-4">
+                    <label><span>Confirm Password</span></label>
                     <InputText type="password" class="input input-bordered w-full" @bind-Value="_model.ConfirmPassword" />
                     <ValidationMessage For="() => _model.ConfirmPassword" class="text-error text-xs mt-1" />
-                </div>
-
+                </label>
+                
                 <div class="card-actions justify-center mt-6">
                     <button type="submit" class="btn btn-primary w-full">Register</button>
                     <a href="/login" class="link link-hover text-sm mt-2">Already have an account? Login</a>
@@ -83,8 +92,16 @@
             Password = _model.Password
         };
 
-        var isSuccess = await UserService.RegisterAsync(newUser);
+        var newHome = new Home()
+        {
+            Name = _model.HouseName
+        };
+
+        var home = HouseService.CreateHomeAsync(newHome);
         
+        newUser.Home = home.Result;
+        var isSuccess = await UserService.RegisterAsync(newUser);
+
         if (isSuccess)
         {
             Nav.NavigateTo("/login");

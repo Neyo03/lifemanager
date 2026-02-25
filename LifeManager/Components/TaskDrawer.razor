@@ -1,4 +1,5 @@
 ﻿@using LifeManager.Data
+@using LifeManager.Model
 @using LifeManager.State
 @inject TagModalStateService ModalService
 
@@ -15,10 +16,10 @@
             
             <EditForm Model="CurrentTask" OnValidSubmit="OnSave" class="col-10 mt-5 w-full">
                 <DataAnnotationsValidator />
-                
+                <ValidationSummary />
                 <label class="floating-label"> 
                     <span>Room</span>
-                    <InputSelect class="select" @bind-Value="CurrentTask.RoomId">
+                    <InputSelect class="select" @bind-Value="CurrentTask.Room.Id">
                         <option value="">Select a room</option>
                         @if (Rooms != null)
                         {
@@ -29,7 +30,7 @@
                         }
                     </InputSelect>
                 </label>
-                <ValidationMessage For="() => CurrentTask.RoomId"/>
+                <ValidationMessage For="() => CurrentTask.Room"/>
 
                 <label class="floating-label mt-3">
                     <span>Title</span>

@@ -12,6 +12,9 @@ public class RegisterModel
 
     [Required(ErrorMessage = "Username is required")]
     public string Username { get; set; } = string.Empty;
+    
+    [Required(ErrorMessage = "HouseName is required")]
+    public string HouseName { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress(ErrorMessage = "Invalid email format")]

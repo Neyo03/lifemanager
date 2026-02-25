@@ -135,6 +135,8 @@ namespace LifeManager.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("HomeId");
+
                     b.ToTable("Tags");
                 });
 
@@ -193,32 +195,51 @@ namespace LifeManager.Migrations
 
             modelBuilder.Entity("LifeManager.Data.HouseTask", b =>
                 {
-                    b.HasOne("LifeManager.Data.Room", null)
+                    b.HasOne("LifeManager.Data.Room", "Room")
                         .WithMany("Tasks")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("LifeManager.Data.Room", b =>
                 {
-                    b.HasOne("LifeManager.Data.Home", null)
+                    b.HasOne("LifeManager.Data.Home", "Home")
                         .WithMany("Rooms")
                         .HasForeignKey("HomeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Home");
+                });
+
+            modelBuilder.Entity("LifeManager.Data.Tag", b =>
+                {
+                    b.HasOne("LifeManager.Data.Home", "Home")
+                        .WithMany("Tags")
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Home");
                 });
 
             modelBuilder.Entity("LifeManager.Data.User", b =>
                 {
-                    b.HasOne("LifeManager.Data.Home", null)
+                    b.HasOne("LifeManager.Data.Home", "Home")
                         .WithMany("Users")
                         .HasForeignKey("HomeId");
+
+                    b.Navigation("Home");
                 });
 
             modelBuilder.Entity("LifeManager.Data.Home", b =>
                 {
                     b.Navigation("Rooms");
+
+                    b.Navigation("Tags");
 
                     b.Navigation("Users");
                 });

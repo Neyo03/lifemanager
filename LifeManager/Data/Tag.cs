@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace LifeManager.Data;
 
 public class Tag
@@ -9,7 +8,5 @@ public class Tag
     public string ColorHex { get; set; } = "#3b82f6";
     
     public List<HouseTask> Tasks { get; set; } = new();
-    
-    [Required(ErrorMessage = "Une maison est obligatoire.")]
-    public int? HomeId { get; set; }
+    public Home Home { get; set; } = new();
 }

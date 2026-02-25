@@ -11,17 +11,23 @@
         </Authorized>
     </AuthorizeView>
     <main>
-        <div class="navbar flex justify-between">
-            <div>
-            </div>
-            <div>
-                <div class="avatar avatar-placeholder">
-                    <div class="bg-neutral text-neutral-content w-12 rounded-full">
-                        <span class="text-sm">N</span>
+        
+        <AuthorizeView>
+            <Authorized>
+                <div class="navbar flex justify-between">
+                    <div>
+                    </div>
+                    <div>
+                        <div class="avatar avatar-placeholder">
+                            <div class="bg-neutral text-neutral-content w-12 rounded-full">
+                                <span class="text-sm">N</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </Authorized>
+        </AuthorizeView>
+        
 
         <article class="content px-4">
             @Body
