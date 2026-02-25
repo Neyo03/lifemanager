@@ -1,33 +1,45 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
 
-    <main>
-        <div class="navbar flex justify-between">
-            <div>
+    
+<div class="page">
+    <AuthorizeView>
+        <Authorized>
+            <div class="sidebar">
+                <NavMenu/>
             </div>
-            <div>
-                <div class="avatar avatar-placeholder">
-                    <div class="bg-neutral text-neutral-content w-12 rounded-full">
-                        <span class="text-sm">N</span>
+        </Authorized>
+    </AuthorizeView>
+    <main>
+        
+        <AuthorizeView>
+            <Authorized>
+                <div class="navbar flex justify-between">
+                    <div>
+                    </div>
+                    <div>
+                        <div class="avatar avatar-placeholder">
+                            <div class="bg-neutral text-neutral-content w-12 rounded-full">
+                                <span class="text-sm">N</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </Authorized>
+        </AuthorizeView>
+        
 
         <article class="content px-4">
             @Body
         </article>
-        
-        <TagModal />
+
+        <TagModal/>
     </main>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+        <div id="blazor-error-ui" data-nosnippet>
+            An unhandled error has occurred.
+            <a href="." class="reload">Reload</a>
+            <span class="dismiss">🗙</span>
+        </div>
+    

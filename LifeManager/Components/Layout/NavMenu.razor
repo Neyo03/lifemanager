@@ -1,7 +1,10 @@
-﻿@using LifeManager.State
+﻿@using LifeManager.Data
+@using LifeManager.Services
+@using LifeManager.State
 @implements IDisposable
 @inject TagStateService TagState
 @inject TagModalStateService ModalService
+@inject UserService UserService
 @rendermode InteractiveServer
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -30,13 +33,7 @@
                 Pièces
             </NavLink>
         </div>
-        @if (!TagState.Tags.Any())
-        {
-            <div class="px-4 text-xs opacity-50">Chargement...</div>
-        }
-        else
-        {
-            
+       
             <div class="nav-item ">
                 <div class="flex justify-between p-3">Tags 
                     
@@ -46,28 +43,30 @@
                         </svg>
                     </a>    
                 </div> 
-                <ul class="p-1">
-                    @foreach (var tag in TagState.Tags)
-                    {
-                        <li>
-                            <span class="cursor-pointer relative"> <span class="rightshape " style="background-color: @tag.ColorHex"></span> @tag.Label</span>
-                        </li>
-                    }
-                </ul>
+                @if (TagState.Tags.Any())
+                {
+                    <ul class="p-1">
+                        @foreach (var tag in TagState.Tags)
+                        {
+                            <li>
+                                <span class="cursor-pointer relative"> <span class="rightshape " style="background-color: @tag.ColorHex"></span> @tag.Label</span>
+                            </li>
+                        }
+                    </ul>
+                }
             </div>
-        }
-        
-        
     </nav>
 </div>
 
 @code {
+    private User? _connectedUser;
     
     protected override async Task OnInitializedAsync()
     {
+        _connectedUser = await UserService.GetAuthenticatedUserAsync();
         ModalService.OnChange += StateHasChanged;
         TagState.OnChange += StateHasChanged;
-        await TagState.InitializeAsync();
+        if (_connectedUser != null) await TagState.InitializeAsync(_connectedUser);
     }
 
     public void Dispose()

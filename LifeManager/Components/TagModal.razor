@@ -1,9 +1,11 @@
 ﻿@using LifeManager.Data
+@using LifeManager.Model
 @using LifeManager.State
 @using LifeManager.Services
 @implements IDisposable
 @inject TagStateService TagState
 @inject TagModalStateService ModalService
+@inject UserService UserService
 @rendermode InteractiveServer
 
 @if (ModalService.IsOpen)
@@ -12,14 +14,14 @@
         <div class="modal-box">
             <h3 class="text-lg font-bold mb-4">Add a new tag</h3>
             
-            <EditForm Model="_newTag" OnValidSubmit="HandleValidSubmit" class="w-full">
+            <EditForm Model="_model" OnValidSubmit="HandleValidSubmit" class="w-full">
                 <DataAnnotationsValidator />
                 
                 <label class="floating-label w-full mb-4">
                     <span>Label</span>
-                    <InputText placeholder="Label" class="input w-full" @bind-Value="_newTag.Label"/>
+                    <InputText placeholder="Label" class="input w-full" @bind-Value="_model.Label"/>
                 </label>
-                <ValidationMessage For="() => _newTag.Label" class="text-error text-sm"/>
+                <ValidationMessage For="() => _model.Label" class="text-error text-sm"/>
                 
                 <div class="mt-4 mb-2 font-semibold text-sm">Select a color</div>
                 <div class="flex flex-wrap gap-3 mb-6">
@@ -28,12 +30,12 @@
                         <button type="button" 
                                 class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110 flex items-center justify-center shadow-sm"
                                 style="background-color: @color; 
-                                       outline: @(_newTag.ColorHex == color ? $"2px solid {color}" : "none"); 
+                                       outline: @(_model.ColorHex == color ? $"2px solid {color}" : "none"); 
                                        outline-offset: 2px;"
                                 @onclick="() => SelectColor(color)"
                                 aria-label="Select color @color">
                             
-                            @if (_newTag.ColorHex == color)
+                            @if (_model.ColorHex == color)
                             {
                                 <svg class="w-4 h-4 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -53,7 +55,8 @@
 }
 
 @code {
-    private Tag _newTag = new() { ColorHex = "#3b82f6" };
+    private TagCreateModel _model = new() { ColorHex = "#3b82f6" };
+    private User? _connectedUser;
 
     private readonly string[] _palette = new[]
     {
@@ -65,22 +68,41 @@
     {
         ModalService.OnChange += RefreshUi;
     }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _connectedUser = await UserService.GetAuthenticatedUserAsync();
+    }
 
     private void SelectColor(string hex)
     {
-        _newTag.ColorHex = hex;
+        _model.ColorHex = hex;
     }
 
     private async Task HandleValidSubmit()
     {
-        await TagState.AddTagAsync(_newTag);
+       
+        if (_connectedUser?.Home == null) 
+        {
+            return;
+        }
+        
+        var tag = new Tag()
+        {
+            Label = _model.Label,
+            ColorHex = _model.ColorHex,
+            Home = _connectedUser.Home
+        };
+        
+        await TagState.AddTagAsync(tag);
+        await TagState.RefreshAsync(_connectedUser);
         CloseModal();
     }
 
     private void CloseModal()
     {
         ModalService.Close();
-        _newTag = new Tag() { ColorHex = "#3b82f6" };
+        _model = new TagCreateModel() { ColorHex = "#3b82f6" };
     }
 
     private void RefreshUi()

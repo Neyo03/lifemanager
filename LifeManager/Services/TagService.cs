@@ -3,24 +3,19 @@ using LifeManager.Data;
 
 namespace LifeManager.Services;
 
-public class TagService
+public class TagService(IDbContextFactory<AppDbContext> factory)
 {
-    private readonly IDbContextFactory<AppDbContext> _factory;
-    
-    public TagService(IDbContextFactory<AppDbContext> factory)
+    public async Task<List<Tag>?> GetTagsAsync(User user)
     {
-        _factory = factory;
-    }
-
-    public async Task<List<Tag>> GetTagsAsync()
-    {
-        await using var context = await _factory.CreateDbContextAsync();
-        return await context.Tags.ToListAsync();
+        if (user == null) throw new ArgumentNullException(nameof(user));
+        await using var context = await factory.CreateDbContextAsync();
+        var home = await context.Homes.Include(home => home.Tags).FirstOrDefaultAsync( home => home.Id == user.Home.Id);
+        return home?.Tags.ToList(); 
     }
 
     public async Task AddTagAsync(Tag tag)
     {
-        await using var context = await _factory.CreateDbContextAsync();
+        await using var context = await factory.CreateDbContextAsync();
         context.Tags.Add(tag);
         await context.SaveChangesAsync();
     }
