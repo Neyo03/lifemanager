@@ -13,7 +13,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LifeManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< Updated upstream
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c0b4690e70484ceb6411a20e42353398816d23e")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+568c7ba3786d3e6811201375668b3d7580a0c1a9")]
+>>>>>>> Stashed changes
 [assembly: System.Reflection.AssemblyProductAttribute("LifeManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LifeManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
