@@ -30,7 +30,7 @@
                                         @if (task.AssignedUsername != null)
                                         {
                                             <button type="button" class="border rounded-full w-5 h-5 flex justify-center items-center text-center border-secondary text-secondary cursor-pointer text-xs " popovertarget="popoverassignuser-user-@task.TaskId" style="anchor-name:--anchor-user-@task.TaskId">
-                                               N
+                                                @task.AssignedUsername[0]
                                             </button>
                                         }
                                         else

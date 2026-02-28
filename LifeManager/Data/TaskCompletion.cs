@@ -11,6 +11,6 @@ public class TaskCompletion
     public User CompletedBy { get; set; }
     public HouseTask HouseTask { get; set; }
     public int XpEarned { get; set; } = 0;
-    public DateTime? CompletedAt { get; set; }
+    public DateTime CompletedAt { get; set; }
 
 }
