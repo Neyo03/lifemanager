@@ -1,5 +1,6 @@
 ﻿using LifeManager.Extensions;
 using LifeManager.Model;
+using Microsoft.VisualBasic;
 
 namespace LifeManager.Services;
 
@@ -86,17 +87,44 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
             .CountAsync();
     }
     
-    // Récupérer les pièces et leurs tâches terminées
-    public async Task<List<Room>> GetRoomsDoneTasksAsync(int homeId)
+    // Récupérer les pièces et leurs tâches terminées de la semaine 
+    public async Task<List<DailyUserTasksDto>> GetRoomsDoneTasksWeekAsync(int homeId)
     {
         await using var context = await factory.CreateDbContextAsync();
-        return await context.Rooms
-            .GetRoomsByHome(homeId)
+        
+        var today = DateTime.UtcNow.Date;
+        int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+        var startOfWeek = today.AddDays(-1 * diff).ToUniversalTime();
+        
+        var rawCompletions = await context.TaskCompletions
             .AsNoTracking()
-            .Include(room => room.Tasks.Where(task => task.IsDone))
-            .ThenInclude(task => task.Tags)
-            .Where(room => room.Tasks.Any(task => task.IsDone))
+            .Where(c => c.HouseTask.Room.HomeId == homeId && c.CompletedAt >= startOfWeek)
+            .Select(c => new TaskCompletionDto
+            {
+                TaskCompletionId = c.Id,
+                HouseTaskId = c.HouseTaskId,
+                TaskTitle = c.HouseTask.Title, 
+                CompletedAt = c.CompletedAt,
+                CompletedById = c.CompletedById,
+                CompletedByName = c.CompletedBy.Username,
+                XpEarned = c.XpEarned,
+            })
             .ToListAsync();
+        
+        var groupedResult = rawCompletions
+            .GroupBy(c => new { Date = c.CompletedAt.Date, Username = c.CompletedByName })
+            .OrderByDescending(g => g.Key.Date)
+            .ThenBy(g => g.Key.Username)
+            .Select(g => new DailyUserTasksDto
+            {
+                Date = g.Key.Date,
+                DateFormat = g.Key.Date.ToString("d/mM"),
+                Username = g.Key.Username,
+                Tasks = g.ToList()
+            })
+            .ToList();
+
+        return groupedResult;
     }
     
     // Récupérer le nombre de tasks
@@ -217,7 +245,7 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
     {
         await using var context = await factory.CreateDbContextAsync();
         
-        var newTaskcompletion = new TaskCompletion
+        var newTaskCompletion = new TaskCompletion
         {
            HouseTaskId = taskCompletion.HouseTaskId,
            CompletedById = taskCompletion.CompletedById,
@@ -225,7 +253,7 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
            XpEarned = taskCompletion.XpEarned,
         };
         
-        context.TaskCompletions.Add(newTaskcompletion);
+        context.TaskCompletions.Add(newTaskCompletion);
         await context.SaveChangesAsync();
     }
 }

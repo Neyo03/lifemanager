@@ -8,7 +8,7 @@ public partial class Home : ComponentBase
 {
     private List<Room>? _rooms;
     private List<RoomDashboardDto>? _roomsWithTasks;
-    private List<Room>? _roomsWithDoneTasks;
+    private List<DailyUserTasksDto>? _roomsWithDoneTasks;
     private List<TaskDetailsDto>? _assignedTasks;
     
     private UserDto? _connectedUser;
@@ -47,7 +47,7 @@ public partial class Home : ComponentBase
         _countTasks = await HouseService.GetTotalTasksAsync(_connectedUser.HomeId);
         _countDoneTasks = await HouseService.GetTotalDoneTasksAsync(_connectedUser.HomeId);
         _countAssignedTasks = await HouseService.CountAssignedTasksAsync(_connectedUser.UserId);
-        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksAsync(_connectedUser.HomeId);
+        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksWeekAsync(_connectedUser.HomeId);
         _levelingUser = await LevelingService.CalculateLevelAsync(_connectedUser.TotalXp);
         _assignedTasks = await HouseService.GetAssignedTasksAsync(_connectedUser.UserId);
     }
@@ -125,7 +125,7 @@ public partial class Home : ComponentBase
         _levelingUser = await LevelingService.CalculateLevelAsync(_connectedUser!.TotalXp);
         _roomsWithTasks = await HouseService.GetRoomsInprogressTasksOptimizedAsync(_connectedUser.HomeId);
         _countDoneTasks = await HouseService.GetTotalDoneTasksAsync(_connectedUser.HomeId);
-        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksAsync(_connectedUser.HomeId);
+        _roomsWithDoneTasks = await HouseService.GetRoomsDoneTasksWeekAsync(_connectedUser.HomeId);
     }
     
     private async Task TaskCompleted(TaskDetailsDto task)
