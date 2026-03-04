@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using LifeManager.Data.Enums;
 
 namespace LifeManager.Data;
 
@@ -26,4 +27,10 @@ public class HouseTask
     public int? UserAssignedId { get; set; }
 
     public int XpToEarn { get; set; } = 0;
+    
+    public TaskDuration Duration { get; set; }
+    
+    public TaskEnergy Energy { get; set; }
+    
+    public TaskImpact Impact { get; set; }
 }

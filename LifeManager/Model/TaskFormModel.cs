@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using LifeManager.Data;
+using LifeManager.Data.Enums;
 
 namespace LifeManager.Model;
 
@@ -11,7 +12,7 @@ public class TaskFormModel
     public string Title { get; set; } = string.Empty;
     
     public string? Description { get; set; } = string.Empty;
-    public DateTime? DueDate { get; set; }
+    // public DateTime? DueDate { get; set; }
     
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Please select a room")]
@@ -19,4 +20,8 @@ public class TaskFormModel
     
     public bool IsDone { get; set; }
     public List<Tag> Tags { get; set; } = new();
+    
+    public TaskDuration Duration { get; set; }
+    public TaskEnergy Energy { get; set; }
+    public TaskImpact Impact { get; set; }
 }
