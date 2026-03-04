@@ -71,10 +71,13 @@ public partial class Home : ComponentBase
             Id = task.TaskId,
             Title = task.Title, 
             Description = task.Description,
-            DueDate = task.DueDate,
+            // DueDate = task.DueDate,
             RoomId = task.RoomId, 
             IsDone = task.IsDone,
-            Tags = task.Tags.ToList()
+            // Tags = task.Tags.ToList(),
+            Duration = task.Duration,
+            Energy =  task.Energy,
+            Impact =  task.Impact,
         };
         _isEditMode = true;
         _isDrawerOpen = true;

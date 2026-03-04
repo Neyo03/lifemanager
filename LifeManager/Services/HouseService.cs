@@ -49,6 +49,9 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
                         Tags = task.Tags.ToList(),
                         DueDate = task.DueDate,
                         Description =  task.Description,
+                        Energy = task.Energy,
+                        Duration =  task.Duration,
+                        Impact =  task.Impact,
                         IsDone = task.IsDone
                     }).ToList()
             })
@@ -157,13 +160,17 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
         {
             Title = formModel.Title,
             Description = formModel.Description,
-            DueDate = formModel.DueDate,
+            // DueDate = formModel.DueDate,
             RoomId = formModel.RoomId,
             IsDone = formModel.IsDone,
             UserAssignedId = null,
-            Tags = formModel.Tags.ToList(),
+            // Tags = formModel.Tags.ToList(),
             UserAssigned = null,
+            Impact = formModel.Impact,
+            Energy =  formModel.Energy,
+            Duration =  formModel.Duration,
         };
+        
         if (formModel.Tags.Any())
         {
             var tagIds = formModel.Tags.Select(t => t.Id).ToList();
@@ -199,9 +206,12 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
         {
             existingTask.Title = formModel.Title;
             existingTask.Description = formModel.Description;
-            existingTask.DueDate = formModel.DueDate;
+            // existingTask.DueDate = formModel.DueDate;
             existingTask.RoomId = formModel.RoomId;
             existingTask.IsDone = formModel.IsDone;
+            existingTask.Duration = formModel.Duration;
+            existingTask.Impact = formModel.Impact;
+            existingTask.Energy = formModel.Energy;
             
             existingTask.Tags.Clear();
             var tagIds = formModel.Tags.Select(t => t.Id).ToList();
@@ -213,14 +223,22 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
     }
     
     // Créér la maison
-    public async Task<Home> CreateHomeAsync(Home home)
+    public async Task CreateHomeAsync(Home home)
     {
+        //todo vérifier si le nom de la maison existe déjà 
         await using var context = await factory.CreateDbContextAsync();
         
         context.Homes.Add(home);
         await context.SaveChangesAsync();
-
-        return home;
+    }
+    
+    // Fonction de contournement pour éviter de refacto le service de registration 
+    public async Task DeleteHomeAsync(Home home)
+    {
+        await using var context = await factory.CreateDbContextAsync();
+        
+        context.Homes.Remove(home);
+        await context.SaveChangesAsync();
     }
     
     public async Task ToggleTaskAsync(int taskId, bool toggleTask)

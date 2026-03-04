@@ -1,4 +1,5 @@
 ﻿using LifeManager.Data;
+using LifeManager.Data.Enums;
 
 namespace LifeManager.Model;
 
@@ -13,4 +14,8 @@ public class TaskDetailsDto
     public int RoomId { get; set; }
     public string RoomName { get; set; } = string.Empty;
     public List<Tag> Tags { get; set; } = new();
+    
+    public TaskDuration Duration { get; set; }
+    public TaskEnergy Energy { get; set; }
+    public TaskImpact Impact { get; set; }
 }

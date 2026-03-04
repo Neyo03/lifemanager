@@ -74,6 +74,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xVc2Vyc1xSZWdpc3RyZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/wagner/Desktop/www/dotnet/LifeManager/LifeManager/Components/RadioGroup.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSYWRpb0dyb3VwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/wagner/Desktop/www/dotnet/LifeManager/LifeManager/Components/RoomTaskList.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb29tVGFza0xpc3QucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

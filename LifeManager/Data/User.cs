@@ -15,6 +15,8 @@ public class User
     public string Password { get; set; } = "";
 
     public Home Home { get; set; }
+    
+    public int HomeId { get; set; }
 
     public int TotalXp { get; set; } = 0;
 }
