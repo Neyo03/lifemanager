@@ -111,6 +111,7 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
                 CompletedById = c.CompletedById,
                 CompletedByName = c.CompletedBy.Username,
                 XpEarned = c.XpEarned,
+                
             })
             .ToListAsync();
         
