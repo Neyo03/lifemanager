@@ -131,7 +131,7 @@ public partial class Home : ComponentBase
     {
         var taskCompletionModel = new TaskCompletionModel()
         {
-            CompletedAt = new DateTime(),
+            CompletedAt = DateTime.UtcNow,
             HouseTaskId = task.TaskId,
             CompletedById = _connectedUser!.UserId,
             XpEarned = 10,
