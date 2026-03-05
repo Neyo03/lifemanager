@@ -1,3 +1,4 @@
+# .github/workflows/docker.yml
 name: Build & Push Docker Image
 
 on:
@@ -14,6 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set lowercase owner
+        run: echo "OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -26,4 +30,4 @@ jobs:
         with:
           context: ./LifeManager
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/dopami-adhd:latest
+          tags: ghcr.io/${{ env.OWNER }}/dopami-adhd:latest
