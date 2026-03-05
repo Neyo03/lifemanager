@@ -6,7 +6,7 @@ namespace LifeManager.Components.Pages;
 
 public partial class Home : ComponentBase
 {
-    private List<Room>? _rooms;
+    private List<RoomDashboardDto>? _rooms;
     private List<RoomDashboardDto>? _roomsWithTasks;
     private List<DailyUserTasksDto>? _roomsWithDoneTasks;
     private List<TaskDetailsDto>? _assignedTasks;
@@ -23,7 +23,6 @@ public partial class Home : ComponentBase
     
     private bool _isDrawerOpen;
     private bool _isEditMode;
-    private bool _isOpenDoneTask;
 
 
     protected override async Task OnInitializedAsync()
@@ -31,7 +30,6 @@ public partial class Home : ComponentBase
         _connectedUser = await UserService.GetAuthenticatedUserAsync();
         if (_connectedUser == null) { return; }
         TagState.OnChange += StateHasChanged;
-        await TagState.InitializeAsync(_connectedUser);
         await LoadDataAsync();
     }
     
@@ -72,12 +70,7 @@ public partial class Home : ComponentBase
         _isEditMode = false;
         _isDrawerOpen = true;
     }
-
-    private void ToggleDoneTasksSection()
-    {
-        _isOpenDoneTask = !_isOpenDoneTask;
-    }
-
+    
     private void OpenEditDrawer(TaskDetailsDto task)
     {
         _currentForm = new TaskFormModel 

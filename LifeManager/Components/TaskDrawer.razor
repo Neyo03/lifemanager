@@ -30,7 +30,7 @@
                         {
                             @foreach (var room in Rooms)
                             {
-                                <option value="@room.Id">@room.Name</option>
+                                <option value="@room.RoomId">@room.RoomName</option>
                             }
                         }
                     </InputSelect>
@@ -62,9 +62,9 @@
 @code {
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
-    [Parameter] public TaskFormModel? CurrentForm { get; set; }
-    [Parameter] public List<Room>? Rooms { get; set; }
-    [Parameter] public List<Tag>? Tags { get; set; }
+    [Parameter] public required TaskFormModel CurrentForm { get; set; }
+    [Parameter] public List<RoomDashboardDto>? Rooms { get; set; }
+    [Parameter] public List<TagDto>? Tags { get; set; }
     
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }
@@ -75,10 +75,10 @@
     private string TagSearchQuery { get; set; } = string.Empty;
     
 
-    private IEnumerable<Tag> FilteredTags => Tags?
-        .Where(t => !CurrentForm.Tags.Any(ct => ct.TagId == t.Id))
+    private IEnumerable<TagDto> FilteredTags => Tags?
+        .Where(t => !CurrentForm.Tags.Any(ct => ct.TagId == t.TagId))
         .Where(t => string.IsNullOrWhiteSpace(TagSearchQuery) || t.Label.Contains(TagSearchQuery, StringComparison.OrdinalIgnoreCase)) 
-        ?? Array.Empty<Tag>();
+        ?? Array.Empty<TagDto>();
 
     private void AddTaskTag(TagDto tag)
     {

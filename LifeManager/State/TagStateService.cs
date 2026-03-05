@@ -6,7 +6,7 @@ namespace LifeManager.State;
 
 public class TagStateService(TagService tagService)
 {
-    public List<Tag> Tags { get; private set; } = new();
+    public List<TagDto> Tags { get; private set; } = new();
     
     public event Action? OnChange;
     

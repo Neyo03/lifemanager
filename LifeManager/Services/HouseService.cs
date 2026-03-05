@@ -10,10 +10,25 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
 {
     
     // Récupérer les pièces et leurs tâches
-    public async Task<List<Room>> GetRoomsAsync(int homeId)
+    public async Task<List<RoomDashboardDto>> GetRoomsAsync(int homeId)
     {
         await using var context = await factory.CreateDbContextAsync();
-        return await context.Rooms.GetRoomsByHome(homeId).ToListAsync();
+        return await context.Rooms
+            .GetRoomsByHome(homeId)
+            .AsNoTracking()
+            .Select(room => new RoomDashboardDto
+            {
+                RoomId = room.Id,
+                RoomName = room.Name,
+                HomeUsers = room.Home!.Users.Select(u => new UserDto 
+                { 
+                    UserId = u.Id, 
+                    Username = u.Username,
+                    HomeId =  u.Home.Id,
+                    TotalXp = u.TotalXp
+                }).ToList(),
+            })
+            .ToListAsync();
     }
     
     public async Task<List<RoomDashboardDto>> GetRoomsInprogressTasksOptimizedAsync(int homeId)
@@ -45,13 +60,7 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
                         AssignedUsername = task.UserAssigned != null ? task.UserAssigned.Username : null,
                         RoomId = task.RoomId,
                         RoomName = task.Room.Name,
-                        Tags = task.Tags.Select(tag => new TagDto()
-                        {
-                            HomeId =  tag.HomeId,
-                            ColorHex = tag.ColorHex,
-                            Label =  tag.Label,
-                            TagId = tag.Id
-                        }).ToList(),
+                        Tags = task.Tags.Select(ToTagDto).ToList(),
                         DueDate = task.DueDate,
                         Description =  task.Description,
                         Energy = task.Energy,
@@ -78,13 +87,7 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
                 AssignedUsername = task.UserAssigned != null ? task.UserAssigned.Username : null,
                 RoomId = task.RoomId,
                 RoomName = task.Room.Name,
-                Tags = task.Tags.Select(tag => new TagDto()
-                {
-                    HomeId =  tag.HomeId,
-                    ColorHex = tag.ColorHex,
-                    Label =  tag.Label,
-                    TagId = tag.Id
-                }).ToList(),
+                Tags = task.Tags.Select(ToTagDto).ToList(),
                 DueDate = task.DueDate,
                 Description =  task.Description,
                 Energy = task.Energy,
@@ -297,4 +300,21 @@ public class HouseService(IDbContextFactory<AppDbContext> factory)
         context.TaskCompletions.Add(newTaskCompletion);
         await context.SaveChangesAsync();
     }
+    
+    public async Task DeleteRoomAsync(int roomId, int userHomeId)
+    {
+        await using var context = await factory.CreateDbContextAsync();
+        
+        await context.Rooms
+            .Where(r => r.Id == roomId && r.HomeId == userHomeId)
+            .ExecuteDeleteAsync();
+    }
+
+    private static readonly Func<Tag, TagDto> ToTagDto = tag => new TagDto
+    {
+        HomeId   = tag.HomeId,
+        ColorHex = tag.ColorHex,
+        Label    = tag.Label,
+        TagId    = tag.Id
+    };
 }
