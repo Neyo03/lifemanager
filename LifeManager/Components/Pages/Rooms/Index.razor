@@ -34,7 +34,7 @@ else
                 <td>@room.RoomName</td>
                 <td>
                     <a href="/rooms/edit/@room.RoomId" class="btn btn-sm btn-secondary">Modifier</a>
-                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteRoom(room.RoomId, _connectedUser.HomeId)">Supprimer</button>
+                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteRoom(room.RoomId, _connectedUser!.HomeId)" disabled="@(_connectedUser == null)">Supprimer</button>
                 </td>
             </tr>
         }
