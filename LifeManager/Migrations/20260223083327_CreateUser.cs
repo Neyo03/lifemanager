@@ -50,6 +50,9 @@ namespace LifeManager.Migrations
                     table.PrimaryKey("PK_Homes", x => x.Id);
                 });
 
+            migrationBuilder.Sql("INSERT INTO \"Homes\" (\"Name\") VALUES ('Default')");
+            migrationBuilder.Sql("UPDATE \"Rooms\" SET \"HomeId\" = (SELECT \"Id\" FROM \"Homes\" ORDER BY \"Id\" LIMIT 1)");
+            
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new

@@ -10,10 +10,6 @@ namespace LifeManager.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_HouseTasks_Users_UserAssignedId",
-                table: "HouseTasks");
-
             migrationBuilder.AlterColumn<int>(
                 name: "UserAssignedId",
                 table: "HouseTasks",
